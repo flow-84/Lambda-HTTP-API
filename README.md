@@ -1,7 +1,7 @@
 # Mein AWS Projekt
 
 ## Architektur
-![Architektur Diagramm](./architecture-diagram.png)
+![Architektur Diagramm](./CF-Lambda-designer.png)
 
 ## Lambda Funktionen
 - `lambda-get`: Liest eine Datei aus dem S3-Bucket.
