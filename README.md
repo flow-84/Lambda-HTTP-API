@@ -8,4 +8,4 @@
 - `lambda-post`: Speichert eine Nachricht im S3-Bucket.
 
 ## CloudFormation
-Die Vorlage befindet sich in der Datei `cloudformation-template.yaml`.
+Die Vorlage befindet sich in der Datei `CF-Lambda.yaml`.
