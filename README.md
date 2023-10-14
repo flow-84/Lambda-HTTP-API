@@ -1,4 +1,4 @@
-# Mein AWS Projekt
+# Mein AWS LAMBDA-HTTP-API STACK
 
 ## Architektur
 ![Architektur Diagramm](./CF-Lambda-designer.png)
