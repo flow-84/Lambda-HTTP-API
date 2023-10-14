@@ -1,0 +1,69 @@
+Resources:
+
+  MyS3Bucket:
+    Type: AWS::S3::Bucket
+
+  LambdaGetFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Handler: index.handler
+      Role: arn:aws:iam::account-ID-without-hyphens:role/execution_role
+      FunctionName: LambdaGetFunction
+      Code:
+        S3Bucket: mittra-bucket-1
+        S3Key: lambda-get.zip
+      Runtime: python3.8
+      Environment:
+        Variables:
+          BUCKET_NAME: !Ref MyS3Bucket
+
+  LambdaPostFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Handler: index.handler
+      Role: arn:aws:iam::account-ID-without-hyphens:role/execution_role
+      FunctionName: LambdaPostFunction
+      Code:
+        S3Bucket: mittra-bucket-1
+        S3Key: lambda-post.zip
+      Runtime: python3.8
+      Environment:
+        Variables:
+          BUCKET_NAME: !Ref MyS3Bucket
+
+  MyApi:
+    Type: AWS::ApiGateway::RestApi
+    Properties: 
+      Name: "MyAPI"
+      Description: "My API Gateway"
+      FailOnWarnings: "true"
+      
+  RootMethod:
+    Type: 'AWS::ApiGateway::Method'
+    Properties:
+      AuthorizationType: NONE
+      HttpMethod: POST
+      ResourceId: !GetAtt 
+        - "MyApi"
+        - "RootResourceId"
+      RestApiId: !Ref "MyApi"
+      Integration:
+        IntegrationHttpMethod: POST
+        Type: AWS_PROXY
+        Uri: 
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaPostFunction.Arn}/invocations
+
+  GetMethod:
+    Type: 'AWS::ApiGateway::Method'
+    Properties:
+      AuthorizationType: NONE
+      HttpMethod: GET
+      ResourceId: !GetAtt 
+        - "MyApi"
+        - "RootResourceId"
+      RestApiId: !Ref "MyApi"
+      Integration:
+        IntegrationHttpMethod: GET
+        Type: AWS_PROXY
+        Uri: 
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaGetFunction.Arn}/invocations
